@@ -1,0 +1,41 @@
+ public List<Goods> getGoodsInfoList() {
+
+        Connection conn = null;
+        Statement stmt = null;
+        ResultSet rset = null;
+
+        //接続文字列
+        String url = "jdbc:postgresql://localhost:5432/zh";
+        String user = "postgres";
+        String password = "postgres";
+        List<Goods> goodsList = new ArrayList<>();
+        try {
+            //PostgreSQLへ接続
+            conn = DriverManager.getConnection(url, user, password);
+
+            //自動コミットOFF
+            conn.setAutoCommit(false);
+
+            //SELECT文の実行
+            stmt = conn.createStatement();
+            String sql = "SELECT * from goods_info;";
+            rset = stmt.executeQuery(sql);
+
+            //SELECT結果の受け取り
+            while (rset.next()) {
+
+                Goods g = new Goods();
+
+                g.setGoodsId(rset.getString(1));
+                g.setGoodName(rset.getString(2));
+                g.setUnitprice(rset.getString(3));
+                g.setQuantity(rset.getString(4));
+
+                System.out.println(g.toString());
+
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(GoodsInfoService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return goodsList;
